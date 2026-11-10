@@ -1,0 +1,233 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>LESGA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky header, hero with the "fair share" idea, filterable product grid, cart drawer. Palette from Nariño: volcano green, potato yellow, papa-roja wine. */
+:root{
+  --bg:#f3f6f1; --surface:#ffffff; --fg:#14261f; --muted:#5a6b63; --line:#d9e1d9;
+  --green:#1f5a45; --green-fg:#ffffff; --yellow:#f0bf3a; --yellow-fg:#2a2000; --wine:#8a2d4a;
+  --tile1:#dfeadd; --shadow:0 6px 24px rgba(20,38,31,.10);
+  --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1c17; --surface:#17281f; --fg:#eaf1ea; --muted:#9bb0a4; --line:#2a4036;
+  --green:#5fc79a; --green-fg:#06251a; --yellow:#f0bf3a; --yellow-fg:#2a2000; --wine:#f08aa8;
+  --tile1:#1f3a2e; --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1c17; --surface:#17281f; --fg:#eaf1ea; --muted:#9bb0a4; --line:#2a4036;
+  --green:#5fc79a; --green-fg:#06251a; --yellow:#f0bf3a; --yellow-fg:#2a2000; --wine:#f08aa8;
+  --tile1:#1f3a2e; --shadow:0 6px 24px rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--f-body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.logo{font-family:var(--f-display);font-weight:800;font-size:1.6rem;letter-spacing:.14em;color:var(--green)}
+.logo small{display:block;font:500 .68rem var(--f-body);letter-spacing:.06em;color:var(--muted)}
+.cartbtn{display:flex;gap:8px;align-items:center;background:var(--green);color:var(--green-fg);border:0;border-radius:999px;padding:10px 16px;font-weight:600}
+.cartbtn .n{background:var(--yellow);color:var(--yellow-fg);border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:.8rem}
+.sim{background:var(--yellow);color:var(--yellow-fg);font-size:.85rem;padding-block:6px;text-align:center}
+.hero{padding-block:36px 8px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
+.hero h1{font-size:clamp(2rem,5.5vw,3.6rem);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--green);background:linear-gradient(transparent 62%,var(--yellow) 62%)}
+.hero p{color:var(--muted);max-width:52ch;margin:14px 0 0}
+.split{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.split h3{font-size:1rem;margin-bottom:12px}
+.row{margin-bottom:12px}.row:last-child{margin-bottom:0}
+.row .lab{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-bottom:4px}
+.meter{height:16px;border-radius:8px;background:var(--line);overflow:hidden;display:flex}
+.meter i{display:block;height:100%}
+.goal{background:var(--green)}.now{background:var(--wine)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-block:22px 14px}
+.tools input{flex:1 1 220px;min-width:0;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:7px 14px;font-size:.9rem}
+.chip[aria-pressed="true"]{background:var(--green);color:var(--green-fg);border-color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;padding-bottom:48px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.tile{height:120px;background:var(--tile1);position:relative}
+.tile svg{width:100%;height:100%;display:block}
+.tag{position:absolute;left:10px;top:10px;font-size:.72rem;background:var(--surface);color:var(--fg);padding:3px 9px;border-radius:999px;border:1px solid var(--line)}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:1.2rem}
+.price{font-family:var(--f-display);font-weight:700;font-size:1.25rem}
+.price small{font:400 .8rem var(--f-body);color:var(--muted)}
+.who{font-size:.85rem;color:var(--muted)}
+.share{font-size:.8rem}
+.share b{color:var(--green)}
+.story{font-size:.88rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.acts{display:flex;gap:8px;margin-top:auto;padding-top:6px}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:600;background:var(--green);color:var(--green-fg);flex:1}
+.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);flex:0 0 auto}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
+.why{background:var(--green);color:var(--green-fg);padding-block:40px}
+.why .in{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.why h3{font-size:1.1rem;margin-bottom:6px}.why p{margin:0;opacity:.9;font-size:.95rem}
+footer{padding-block:22px;color:var(--muted);font-size:.85rem}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40}
+.drawer{position:fixed;z-index:41;top:0;bottom:0;right:0;width:min(420px,100%);background:var(--surface);color:var(--fg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px);box-shadow:var(--shadow)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--line)}
+.dh h2{font-size:1.3rem}
+.items{flex:1;overflow:auto;padding:8px 16px}
+.it{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.it .q{display:flex;gap:6px;align-items:center}
+.q button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.df{padding:16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.tot{display:flex;justify-content:space-between}
+.tot.big{font-family:var(--f-display);font-size:1.3rem;font-weight:700}
+.farm{color:var(--green);font-weight:600}
+.df input{padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit;min-width:0;width:100%}
+.ok{padding:20px;text-align:center}
+.ok h3{font-size:1.4rem;margin-bottom:8px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.why .in{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.card{transition:transform .15s}.card:hover{transform:translateY(-3px)}}
+</style>
+
+<div class="sim"><div class="wrap">Prototipo con productores y precios simulados. No se hacen cobros reales.</div></div>
+<header class="top"><div class="wrap bar">
+  <div class="logo">LESGA<small>Del campo de Pasto a tu mesa</small></div>
+  <button class="cartbtn" id="openCart" aria-label="Abrir carrito">Carrito <span class="n" id="count">0</span></button>
+</div></header>
+
+<main>
+<section class="wrap hero">
+  <div>
+    <h1>Lo que crece en Pasto <em>vale más</em> de lo que le pagan.</h1>
+    <p>Compra papa, ulluco, haba, quinua y más directo a las familias que los cultivan en Genoy, Obonuco, Catambuco y las veredas de alrededor. Cada producto te muestra quién lo sembró y cuánto de tu pago le llega.</p>
+  </div>
+  <div class="split">
+    <h3>De cada $100 que pagas, ¿cuánto llega al agricultor?</h3>
+    <div class="row"><div class="lab"><span>Meta LESGA</span><b>$70</b></div><div class="meter"><i class="goal" style="width:70%"></i></div></div>
+    <div class="row"><div class="lab"><span>Tu carrito ahora</span><b id="heroShare">–</b></div><div class="meter"><i class="now" id="heroBar" style="width:0%"></i></div></div>
+    <p style="font-size:.8rem;margin-top:12px">Porcentajes de ejemplo. Los reales los acordamos con los productores.</p>
+  </div>
+</section>
+
+<section class="wrap" id="catalogo">
+  <div class="tools">
+    <input id="q" type="search" placeholder="Buscar: papa, haba, café…" aria-label="Buscar productos">
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="why"><div class="wrap in">
+  <div><h3>Precio justo a la vista</h3><p>Ves cuánto de cada compra es para quien sembró. Sin intermediarios que lo escondan.</p></div>
+  <div><h3>Con nombre y vereda</h3><p>Cada producto trae la historia de la familia que lo cultiva y de dónde viene.</p></div>
+  <div><h3>Lo nuestro, bien valorado</h3><p>Lo mejor de Nariño se queda aquí y se paga como merece.</p></div>
+</div></section>
+</main>
+<footer class="wrap">LESGA · Proyecto de Esteban Alejandro Rosero Realpe y Luis Gabriel López Pinta · Pasto, Nariño</footer>
+
+<div id="layer" hidden>
+  <div class="scrim" id="scrim"></div>
+  <aside class="drawer" role="dialog" aria-label="Carrito de compras">
+    <div class="dh"><h2>Tu carrito</h2><button class="btn ghost" id="closeCart">Cerrar</button></div>
+    <div id="cartBody" style="display:flex;flex-direction:column;flex:1;min-height:0"></div>
+  </aside>
+</div>
+
+<script>
+var P=[
+ {id:1,n:"Papa pastusa",c:"Papa",u:"kg",p:2800,f:72,who:"Familia Chamorro",v:"Genoy",col:"#c99a3d",s:"Variedad de tierra fría, buena para sopas y puré. Siembran en terrazas con abono de la finca."},
+ {id:2,n:"Papa criolla",c:"Papa",u:"kg",p:4200,f:74,who:"Doña Rosa Burbano",v:"Obonuco",col:"#e8b931",s:"Pequeña, amarilla y de cocción rápida. Se cosecha a mano en lotes de media hectárea."},
+ {id:3,n:"Papa roja",c:"Papa",u:"kg",p:3000,f:70,who:"Asociación Surcos de Catambuco",v:"Catambuco",col:"#a63a55",s:"Piel roja y pulpa firme. Ideal para freír o asar."},
+ {id:4,n:"Ulluco",c:"Tubérculos",u:"kg",p:5500,f:75,who:"Familia Erazo",v:"Mapachico",col:"#d36b8e",s:"Tubérculo andino de colores vivos, casi desconocido fuera de la región."},
+ {id:5,n:"Oca",c:"Tubérculos",u:"kg",p:5000,f:75,who:"Don Segundo Ipiales",v:"Jongovito",col:"#d9823b",s:"Dulce y crujiente. Se endulza al sol antes de comerla."},
+ {id:6,n:"Haba verde",c:"Granos",u:"kg",p:4800,f:71,who:"Familia Tulcán",v:"Cabrera",col:"#6aa35a",s:"Desgranada a mano. Se vende en vaina para que dure más."},
+ {id:7,n:"Arveja verde",c:"Granos",u:"kg",p:6500,f:71,who:"Doña Luz Mery Pantoja",v:"La Laguna",col:"#58a06b",s:"Cultivada junto a la laguna de La Cocha, con riego de lluvia."},
+ {id:8,n:"Quinua",c:"Granos",u:"500 g",p:9000,f:73,who:"Asociación Semillas del Galeras",v:"Genoy",col:"#c9b27a",s:"Grano andino lavado y seleccionado a mano."},
+ {id:9,n:"Maíz choclo",c:"Granos",u:"6 unid.",p:6000,f:70,who:"Familia Villota",v:"Catambuco",col:"#e9c64a",s:"Mazorcas tiernas, cosechadas el mismo día del pedido."},
+ {id:10,n:"Cebolla junca",c:"Hortalizas",u:"manojo",p:2500,f:68,who:"Doña Marlene Guerrero",v:"Obonuco",col:"#7bb56a",s:"Cebolla de rama, fresca, con tallo largo."},
+ {id:11,n:"Zanahoria",c:"Hortalizas",u:"kg",p:2600,f:68,who:"Familia Rosero",v:"Buesaquera",col:"#e27a2d",s:"Dulce por el clima frío de la zona alta."},
+ {id:12,n:"Repollo",c:"Hortalizas",u:"unidad",p:3000,f:68,who:"Don Alirio Benavides",v:"Mocondino",col:"#8bbf8a",s:"Cabezas firmes, cultivadas sin riego de pozo."},
+ {id:13,n:"Mora de Castilla",c:"Frutas",u:"500 g",p:6000,f:72,who:"Doña Gloria Yela",v:"Cabrera",col:"#6b2f6b",s:"Fruta de clima frío, ideal para jugo y postres."},
+ {id:14,n:"Queso campesino",c:"Del campo",u:"500 g",p:14000,f:70,who:"Familia Mora",v:"El Encano",col:"#f1dd9b",s:"Hecho el mismo día con leche de la finca."},
+ {id:15,n:"Café de Nariño",c:"Del campo",u:"500 g",p:28000,f:76,who:"Cooperativa Alto Café (Buesaco)",v:"Buesaco",col:"#6b4128",s:"Café de altura tostado en la región. Aquí se queda lo mejor, no lo peor."}
+];
+var cats=["Todos","Papa","Tubérculos","Granos","Hortalizas","Frutas","Del campo"];
+var cart={},cat="Todos",term="",open={};
+var $=function(i){return document.getElementById(i)};
+var fmt=function(n){return "$"+Math.round(n).toLocaleString("es-CO")};
+function E(cx,cy,rx,ry,f,r,o){return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="'+f+'" transform="rotate('+(r||0)+' '+cx+' '+cy+')" opacity="'+(o||1)+'"/>'}
+function C(cx,cy,r,f,o){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+f+'" opacity="'+(o||1)+'"/>'}
+function PA(d,f,s,w){return '<path d="'+d+'" fill="'+(f||"none")+'"'+(s?' stroke="'+s+'" stroke-width="'+(w||3)+'" stroke-linecap="round"':'')+'/>'}
+function art(x){
+  var c=x.col,g='<ellipse cx="150" cy="106" rx="115" ry="8" fill="#000" opacity=".12"/>',i,j,a,b;
+  if(x.id===1||x.id===3){
+    [[100,76,38,27,-10],[162,66,41,30,8],[218,80,33,24,22]].forEach(function(p,k){g+=E(p[0],p[1],p[2],p[3],c,p[4]);g+=E(p[0]-8,p[1]-8,p[2]*.5,p[3]*.4,"#fff",p[4],.18);g+=C(p[0]+10,p[1]+4,2.5,"#000",.3)+C(p[0]-14,p[1]+10,2.2,"#000",.3)+C(p[0]+2,p[1]-10,2,"#000",.3)});
+  }else if(x.id===2){
+    [[95,80],[130,64],[170,78],[205,62],[240,82],[115,92],[190,94]].forEach(function(p,k){g+=C(p[0],p[1],19-k%2*3,c)+E(p[0]-5,p[1]-6,7,4,"#fff",-20,.3)+C(p[0]+5,p[1]+3,1.8,"#000",.3)});
+  }else if(x.id===4){
+    for(i=0;i<10;i++){a=80+(i%5)*36+(i>4?18:0);b=i<5?56:82;var col=[c,"#f0c94a","#c0407a"][i%3];g+=E(a,b,17,11,col,(i*37)%60-30);g+=C(a-4,b-2,1.8,"#7a1d4c",.6)+C(a+5,b+3,1.8,"#7a1d4c",.6)}
+  }else if(x.id===5){
+    [[100,62,44,13,-20],[175,50,44,13,15],[125,88,44,13,8],[208,84,42,12,-12]].forEach(function(p,k){g+='<g transform="rotate('+p[4]+' '+p[0]+' '+p[1]+')">'+E(p[0],p[1],p[2],p[3],k%2?"#e9a8b0":c);for(j=0;j<4;j++)g+=PA("M"+(p[0]-24+j*16)+" "+(p[1]-9)+" L"+(p[0]-24+j*16)+" "+(p[1]+9),null,"rgba(0,0,0,.22)",2);g+='</g>'});
+  }else if(x.id===6){
+    [[150,42,-6],[150,80,5]].forEach(function(p){g+='<g transform="rotate('+p[2]+' 150 '+p[1]+')">'+E(150,p[1],82,16,c);for(j=0;j<5;j++)g+=C(106+j*22,p[1],10,"#a8d48f")+C(103+j*22,p[1]-3,3,"#fff",.4);g+='</g>'});
+  }else if(x.id===7){
+    g+=E(150,64,88,22,c,-4);for(j=0;j<6;j++)g+=C(92+j*23,62+(j%2)*2,11.5,"#b9e48f")+C(89+j*23,58,3.5,"#fff",.45);
+    g+=C(60,96,9,"#b9e48f")+C(240,98,9,"#b9e48f")+C(220,100,8,"#a5d37b");
+  }else if(x.id===8){
+    for(i=0;i<110;i++){a=150+(((i*37)%101)-50)*1.05;b=80-((i*53)%27)*(1-Math.abs(a-150)/85);g+=C(a,b,2.8,["#e6d3a0","#cdb67e","#f2e6c3"][i%3])}
+    g+=PA("M70 78 Q150 132 230 78 Z","#9a6b3d")+PA("M70 78 L230 78","none","#7c5430",4);
+  }else if(x.id===9){
+    [[112,54,-12],[190,54,10]].forEach(function(p){var cx=p[0],cy=p[1];g+='<g transform="rotate('+p[2]+' '+cx+' '+cy+')">'+PA("M"+(cx-22)+" "+(cy+12)+" Q"+cx+" "+(cy+62)+" "+(cx+22)+" "+(cy+12)+" Q"+cx+" "+(cy+30)+" "+(cx-22)+" "+(cy+12),"#6fae5a")+E(cx,cy,16,42,"#f2d34e");for(var r=0;r<7;r++)for(var q=0;q<3;q++)g+=C(cx-9+q*9,cy-32+r*9.5,3.4,"#f9e58a");g+='</g>'});
+  }else if(x.id===10){
+    for(i=0;i<5;i++){a=104+i*23;g+='<rect x="'+(a-3.5)+'" y="8" width="7" height="68" rx="3.5" fill="#6fb25f"/><rect x="'+(a-3.5)+'" y="68" width="7" height="18" fill="#eef1dd"/>'+E(a,88,9,10,"#f6f4ea")+PA("M"+(a-4)+" 96 l-4 8 M"+a+" 98 l0 9 M"+(a+4)+" 96 l4 8",null,"#c9c3a8",1.5)}
+  }else if(x.id===11){
+    for(i=0;i<4;i++){a=96+i*38;g+='<g transform="rotate('+((i-1.5)*8)+' '+a+' 30)"><polygon points="'+(a-12)+',30 '+(a+12)+',30 '+(a+1)+',102" fill="'+c+'"/>'+PA("M"+(a-6)+" 48 h8 M"+(a-4)+" 64 h7 M"+(a-2)+" 80 h5",null,"rgba(0,0,0,.2)",1.8)+PA("M"+a+" 30 L"+(a-9)+" 8 M"+a+" 30 L"+a+" 4 M"+a+" 30 L"+(a+9)+" 8",null,"#5aa04a",4)+'</g>'}
+  }else if(x.id===12){
+    g+=C(150,62,48,"#6fa56e")+C(150,62,42,c)+PA("M150 20 Q112 62 150 104 M150 20 Q188 62 150 104 M110 40 Q150 62 190 40",null,"#d7edd0",3);
+  }else if(x.id===13){
+    g+=PA("M150 24 q-18 -14 -34 -8 q14 14 34 8 M150 24 q18 -14 34 -8 q-14 14 -34 8","#5f9f4f");
+    [[150,40],[132,55],[168,55],[114,70],[150,70],[186,70],[132,85],[168,85]].forEach(function(p){g+=C(p[0],p[1],13,c)+C(p[0]-4,p[1]-5,3.6,"#fff",.35)});
+  }else if(x.id===14){
+    g+='<polygon points="96,58 214,44 240,68 124,86" fill="#f7e9a6"/><polygon points="124,86 240,68 240,92 124,108" fill="'+c+'"/><polygon points="96,58 124,86 124,108 96,80" fill="#e3cd7e"/>'+C(150,96,4.5,"#e3cd7e")+C(200,88,5.5,"#e3cd7e")+C(222,82,3.5,"#e3cd7e");
+  }else{
+    g+='<rect x="114" y="18" width="72" height="86" rx="7" fill="'+c+'"/><rect x="114" y="18" width="72" height="12" rx="5" fill="#8a5a3a"/><rect x="126" y="46" width="48" height="34" rx="4" fill="#f1e3c6"/><text x="150" y="68" text-anchor="middle" font-size="11" font-weight="700" fill="#6b4128" font-family="sans-serif">CAFÉ</text>';
+    [[70,88,-20],[96,98,25],[216,96,-25],[244,86,18],[60,66,10],[258,64,-12]].forEach(function(p){g+=E(p[0],p[1],10,7,"#4a2a18",p[2])+PA("M"+(p[0]-8)+" "+p[1]+" Q"+p[0]+" "+(p[1]-4)+" "+(p[0]+8)+" "+p[1],null,"#8a5a3a",1.5)});
+  }
+  return '<svg viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Ilustración de '+x.n+'">'+g+'</svg>';
+}
+function chipsR(){$("chips").innerHTML=cats.map(function(c){return '<button class="chip" aria-pressed="'+(c===cat)+'" data-c="'+c+'">'+c+'</button>'}).join("")}
+function gridR(){
+  var l=P.filter(function(x){return (cat==="Todos"||x.c===cat)&&(x.n+" "+x.who+" "+x.v).toLowerCase().indexOf(term)>-1});
+  $("grid").innerHTML=l.length?l.map(function(x){return '<article class="card"><div class="tile">'+art(x)+'<span class="tag">'+x.v+'</span></div><div class="body"><h3>'+x.n+'</h3><div class="price">'+fmt(x.p)+' <small>por '+x.u+'</small></div><div class="who">'+x.who+' · productor simulado</div><div class="share">De cada $100, <b>$'+x.f+'</b> llegan al agricultor</div>'+(open[x.id]?'<div class="story">'+x.s+'</div>':'')+'<div class="acts"><button class="btn" data-add="'+x.id+'">Agregar</button><button class="btn ghost" data-story="'+x.id+'">'+(open[x.id]?'Ocultar':'Su historia')+'</button></div></div></article>'}).join(""):'<p class="empty">No encontramos ese producto. Prueba con otra palabra.</p>';
+}
+function totals(){var t=0,fm=0,n=0;P.forEach(function(x){var q=cart[x.id]||0;t+=q*x.p;fm+=q*x.p*x.f/100;n+=q});return{t:t,f:fm,n:n}}
+function cartR(done){
+  var T=totals();$("count").textContent=T.n;
+  var pct=T.t?Math.round(T.f/T.t*100):0;
+  $("heroShare").textContent=T.t?"$"+pct:"–";$("heroBar").style.width=pct+"%";
+  var b=$("cartBody");
+  if(done){b.innerHTML='<div class="ok"><h3>Pedido simulado recibido</h3><p>Gracias, '+done.name+'. En LESGA real, aquí confirmaríamos el pago y avisaríamos a los productores.</p><p class="farm">Habrían llegado '+fmt(done.f)+' a los agricultores.</p><button class="btn" id="again">Seguir comprando</button></div>';return}
+  if(!T.n){b.innerHTML='<p class="empty" style="padding:40px 16px">Tu carrito está vacío. Agrega productos del catálogo.</p>';return}
+  b.innerHTML='<div class="items">'+P.filter(function(x){return cart[x.id]}).map(function(x){return '<div class="it"><b>'+x.n+'</b><span>'+fmt(x.p*cart[x.id])+'</span><span class="who">'+x.who+'</span><span class="q"><button data-m="'+x.id+'" aria-label="Quitar uno">−</button>'+cart[x.id]+'<button data-p="'+x.id+'" aria-label="Agregar uno">+</button></span></div>'}).join("")+'</div><form class="df" id="form"><div class="tot"><span>Total</span><b>'+fmt(T.t)+'</b></div><div class="tot farm"><span>Para los agricultores</span><span>'+fmt(T.f)+' ('+pct+'%)</span></div><input id="nm" required placeholder="Tu nombre" autocomplete="name"><input id="ad" required placeholder="Dirección o punto de acopio" autocomplete="street-address"><button class="btn" type="submit">Hacer pedido (simulado)</button></form>';
+}
+function openC(){$("layer").hidden=false;cartR()}
+function closeC(){$("layer").hidden=true}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("button");if(!t)return;
+  if(t.dataset.c){cat=t.dataset.c;chipsR();gridR()}
+  else if(t.dataset.add){cart[t.dataset.add]=(cart[t.dataset.add]||0)+1;cartR();t.textContent="Agregado";setTimeout(function(){t.textContent="Agregar"},700)}
+  else if(t.dataset.story){open[t.dataset.story]=!open[t.dataset.story];gridR()}
+  else if(t.dataset.p){cart[t.dataset.p]++;cartR()}
+  else if(t.dataset.m){cart[t.dataset.m]--;if(!cart[t.dataset.m])delete cart[t.dataset.m];cartR()}
+  else if(t.id==="again"){cart={};closeC();cartR()}
+  else if(t.id==="openCart")openC();
+  else if(t.id==="closeCart")closeC();
+});
+$("scrim").addEventListener("click",closeC);
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeC()});
+$("q").addEventListener("input",function(e){term=e.target.value.toLowerCase();gridR()});
+document.addEventListener("submit",function(e){if(e.target.id!=="form")return;e.preventDefault();var T=totals();var d={name:$("nm").value,f:T.f};cart={};cartR(d)});
+chipsR();gridR();cartR();
+</script>
+
+</body></html>
